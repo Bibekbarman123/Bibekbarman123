@@ -1,12 +1,50 @@
-- 👋 Hi, I’m @Bibekbarman123
-- 👀 I’m interested in ...
-- 🌱 I’m currently learning ...
-- 💞️ I’m looking to collaborate on ...
-- 📫 How to reach me ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
+import requests
 
-<!---
-Bibekbarman123/Bibekbarman123 is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-You can click the Preview link to take a look at your changes.
---->
+class AadharUCLService:
+    def __init__(self, base_url, api_key):
+        self.base_url = base_url
+        self.api_key = api_key
+
+    def generate_ucl(self, aadhar_number):
+        endpoint = f"{self.base_url}/generate_ucl"
+        headers = {"Authorization": f"Bearer {self.api_key}"}
+        data = {"aadhar_number": aadhar_number}
+
+        response = requests.post(endpoint, json=data, headers=headers)
+        
+        if response.status_code == 200:
+            return response.json()["ucl"]
+        else:
+            return None
+
+    def verify_ucl(self, ucl):
+        endpoint = f"{self.base_url}/verify_ucl"
+        headers = {"Authorization": f"Bearer {self.api_key}"}
+        data = {"ucl": ucl}
+
+        response = requests.post(endpoint, json=data, headers=headers)
+
+        if response.status_code == 200:
+            return True
+        else:
+            return False
+
+# Example usage
+base_url = "https://example.com/aadhar/ucl/api"
+api_key = "your_api_key_here"
+
+aadhar_ucl_service = AadharUCLService(base_url, api_key)
+
+# Generate UCL for Aadhar number
+aadhar_number = "your_aadhar_number_here"
+ucl = aadhar_ucl_service.generate_ucl(aadhar_number)
+if ucl:
+    print("UCL generated successfully:", ucl)
+else:
+    print("Failed to generate UCL")
+
+# Verify UCL
+if aadhar_ucl_service.verify_ucl(ucl):
+    print("UCL is valid")
+else:
+    print("UCL is invalid")
